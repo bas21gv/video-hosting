@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface SubscriberRepository extends JpaRepository<Subscriber, Long> {
 
     @Query("SELECT s FROM Subscriber s WHERE s.email= :email")
-    Subscriber findByEmail(String email);
+    Optional<Subscriber> findByEmail(String email);
 }

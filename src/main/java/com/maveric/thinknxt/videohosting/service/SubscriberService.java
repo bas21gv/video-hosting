@@ -10,7 +10,6 @@ import com.maveric.thinknxt.videohosting.repository.SubscriberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -26,41 +25,11 @@ public class SubscriberService {
     }
 
     public void createSubscriber(SubscribeChannelRequest subscribeChannelRequest) {
-        Subscriber subscriber = subscriberRepository.findByEmail(subscribeChannelRequest.getEmail());
+        Subscriber subscriber = subscriberRepository.findByEmail(subscribeChannelRequest.getEmail())
+                .orElseThrow(()-> new ResourceNotFoundException("Subscriber not found with given name: "+subscribeChannelRequest.getEmail()));
         MediaChannel mediaChannel = channelRepository.findByName(subscribeChannelRequest.getSubscribeChannel())
                 .orElseThrow(()-> new ResourceNotFoundException("Channel not exists with given name :"+subscribeChannelRequest.getSubscribeChannel()));
-        if(Objects.nonNull(subscriber)) {
-            subscriber.getMediaChannels().add(mediaChannel);
-            subscriberRepository.save(subscriber);
-            subscriberProcessor.subcribeChannel(mediaChannel.getId(), subscriber);
-        }
+        SubscriberResponse subscriberResponse = SubscriberMapper.mapToSubscriberResponse(subscriber);
+        subscriberProcessor.subcribeChannel(mediaChannel.getId(), subscriberResponse);
     }
-
-
-    /*public SubscriberResponse addSubscriber(SubscriberRequest subscriberRequest) {
-        Subscriber subscriber = subscriberRepository.findByEmail(subscriberRequest.getEmail());
-        MediaChannel mediaChannel = mediaChannelRepository.findByName(subscriberRequest.getSubscribedTo())
-                .orElseThrow(()-> new ResourceNotFoundException("Channel not exists with given name :"+subscriberRequest.getSubscribedTo()));
-        if(Objects.isNull(subscriber)) {
-            Subscriber newSubscriber = Subscriber.builder()
-                    .firstName(subscriberRequest.getFirstName())
-                    .lastName(subscriberRequest.getLastName())
-                    .email(subscriberRequest.getEmail())
-                    .mediaChannelList(Arrays.asList(mediaChannel))
-                    .build();
-            return SubscriberMapper.mapToSubscriberResponse(subscriberRepository.save(newSubscriber));
-        } else {
-            subscriber.setFirstName(subscriberRequest.getFirstName());
-            subscriber.setLastName(subscriberRequest.getLastName());
-            subscriber.setEmail(subscriberRequest.getEmail());
-            List<MediaChannel> channelList = subscriber.getMediaChannelList();
-            if(channelList.isEmpty()) {
-                subscriber.setMediaChannelList(Arrays.asList(mediaChannel));
-            } else {
-                channelList.add(mediaChannel);
-                subscriber.setMediaChannelList(channelList);
-            }
-            return SubscriberMapper.mapToSubscriberResponse(subscriberRepository.save(subscriber));
-        }
-    }*/
 }

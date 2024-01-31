@@ -5,6 +5,7 @@ import com.maveric.thinknxt.videohosting.dto.SubscriberRequest;
 import com.maveric.thinknxt.videohosting.dto.SubscriberResponse;
 import com.maveric.thinknxt.videohosting.service.SubscriberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,6 @@ public class SubscriberController {
     @PostMapping("/subscribe")
     public ResponseEntity<String> subscribeMediaChannel(@RequestBody SubscribeChannelRequest subscribeChannelRequest) {
         subscriberService.createSubscriber(subscribeChannelRequest);
-        return ResponseEntity.ok("Message sent!!");
+        return ResponseEntity.ok("Subscribed and message sent!!");
     }
 }
