@@ -21,18 +21,17 @@ public class Subscriber {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "subscriber_id")
     private Long id;
     private String firstName;
     private String lastName;
     @Column(unique = true)
     private String email;
 
-    @JoinTable(
+    /*@JoinTable(
             name = "channel_subscribe",
             joinColumns = @JoinColumn(name = "subscriber_id", referencedColumnName = "subscriber_id"),
             inverseJoinColumns = @JoinColumn(name = "channel_id", referencedColumnName = "channel_id")
     )
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<MediaChannel> mediaChannels = new HashSet<>();
+    private Set<MediaChannel> mediaChannels = new HashSet<>();*/
 }

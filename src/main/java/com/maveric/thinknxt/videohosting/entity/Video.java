@@ -7,22 +7,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Table(name = "channels")
+@Table(name = "videos")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MediaChannel {
+public class Video {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String name;
-    private String email;
-    private String createdBy;
-    private LocalDateTime createdDate;
+    private String title;
+    private Integer widthResolution;
+    private Integer heightResolution;
+    private Long uploadedTo;
+    private LocalDateTime uploadDateTime;
+    private Integer viewCount;
+    private String description;
 }
