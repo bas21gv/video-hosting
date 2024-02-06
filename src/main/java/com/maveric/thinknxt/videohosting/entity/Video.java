@@ -24,6 +24,6 @@ public class Video {
     private Integer heightResolution;
     private Long uploadedTo;
     private LocalDateTime uploadDateTime;
-    private Integer viewCount;
+    private int viewCount;
     private String description;
 }

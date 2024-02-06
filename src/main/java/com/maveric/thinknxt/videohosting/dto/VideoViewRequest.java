@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ViewCountRequest {
+public class VideoViewRequest {
     private Long videoId;
     private Long channelId;
-    private Integer viewCount;
+    private Long subscriberId;
 }

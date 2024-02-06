@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ViewCountResponse {
     private Long videoId;
-    private Integer viewCount;
+    private int viewCount;
 }

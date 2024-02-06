@@ -20,5 +20,5 @@ public class VideoResponse {
     private Long uploadedTo;
     private LocalDateTime uploadDateTime;
     private String description;
-    private Integer viewCount;
+    private int viewCount;
 }

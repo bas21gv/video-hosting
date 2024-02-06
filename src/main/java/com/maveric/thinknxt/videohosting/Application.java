@@ -1,11 +1,11 @@
 package com.maveric.thinknxt.videohosting;
 
 import com.maveric.thinknxt.videohosting.dto.NewVideosNotification;
-import com.maveric.thinknxt.videohosting.dto.SubscriberResponse;
+import com.maveric.thinknxt.videohosting.dto.SubscriberInfo;
 import com.maveric.thinknxt.videohosting.dto.SubscriptionNotification;
 import com.maveric.thinknxt.videohosting.entity.Video;
 import com.maveric.thinknxt.videohosting.serdes.NewVideosNotificationSerdes;
-import com.maveric.thinknxt.videohosting.serdes.SubscriberResponseSerdes;
+import com.maveric.thinknxt.videohosting.serdes.SubscriberInfoSerdes;
 import com.maveric.thinknxt.videohosting.serdes.SubscriptionNotificationSerdes;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -37,8 +37,8 @@ public class Application {
     }
 
     @Bean
-    public Serde<SubscriberResponse> subscriberResponseSerdes() {
-        return new SubscriberResponseSerdes();
+    public Serde<SubscriberInfo> subscriberInfoSerde() {
+        return new SubscriberInfoSerdes();
     }
 
     @Bean
@@ -52,7 +52,7 @@ public class Application {
     }
 
     @Bean
-    public Consumer<KStream<Long, SubscriberResponse>> retrieve() {
+    public Consumer<KStream<Long, SubscriberInfo>> retrieve() {
         return (inputStream) -> inputStream.peek((key,value)->log.info("retrieve key: {} value: {}",key,value));
     }
 
@@ -68,9 +68,9 @@ public class Application {
      *
      */
     @Bean
-    public Function<KStream<Long, SubscriberResponse>, KStream<Long, SubscriptionNotification>> subscribeNotification() {
+    public Function<KStream<Long, SubscriberInfo>, KStream<Long, SubscriptionNotification>> subscribeNotification() {
         KeyValueMapper<Windowed<Long>,SubscriptionNotification, KeyValue<Long,SubscriptionNotification>> keyValueMap =(windowKey, value)->new KeyValue<>(windowKey.key(),value);
-        Function<KStream<Long, SubscriberResponse>, KStream<Long, SubscriptionNotification>> function = inputStream -> {
+        Function<KStream<Long, SubscriberInfo>, KStream<Long, SubscriptionNotification>> function = inputStream -> {
             KStream<Long, SubscriptionNotification> grouped = inputStream
                     .peek((key,value)->log.info("Before delivery:: channelid: {} subsciberInfo {}",key,value))
                     .groupByKey()
@@ -82,9 +82,9 @@ public class Application {
                                     aggV.getSubscriberInfos().add(value);
                                 } else {
                                     aggV.setChannelId(key);
-                                    Set<SubscriberResponse> subscriberInfo = new HashSet<>();
-                                    subscriberInfo.add(value);
-                                    aggV.setSubscriberInfos(subscriberInfo);
+                                    Set<SubscriberInfo> subscriberInfos = new HashSet<>();
+                                    subscriberInfos.add(value);
+                                    aggV.setSubscriberInfos(subscriberInfos);
                                 }
                                 return aggV;
                             },
@@ -99,13 +99,16 @@ public class Application {
 
 
     @Bean
-    public Function<KStream<Long, Video>, KStream<Long, Integer>> videoView() {
+    public Function<KStream<Long, Video>, KStream<Long, Integer>> videoCount() {
         Function<KStream<Long, Video>, KStream<Long, Integer>> function = inputStream -> {
-            KStream<Long, Integer> viewCount = inputStream
-                    .peek((key,value)->log.info("Before delivery:: videoid: {} video {}",key,value))
-                    .mapValues(Video::getViewCount)
+            KStream<Long, Integer> videoCount = inputStream
+                    .peek((key,value)->log.info("Before delivery:: subscriberid: {} video {}",key,value))
+                    .groupBy((key,value)-> value.getId())
+                    .aggregate(()->0,(key, value, aggrV)->aggrV+value.getViewCount(),
+                            Materialized.with(Serdes.Long(), Serdes.Integer()))
+                    .toStream()
                     .peek((key,value)->log.info("After delivery:: videoid: {} viewcount {}",key,value));
-            return viewCount;
+            return videoCount;
         };
         return function;
     }

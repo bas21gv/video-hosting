@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class ChannelProcessor {
 
     private static final String NEWVIDEO_FUNCTION = "newvideo-out-0";
+    private static final String VIDEOVIEW_FUNCTION = "videoview-out-0";
     private final StreamBridge streamBridge;
 
     public void addVideo(Long channelId, Video video) {
@@ -23,5 +24,13 @@ public class ChannelProcessor {
                 .setHeader(KafkaHeaders.KEY, channelId)
                 .build();
         streamBridge.send(NEWVIDEO_FUNCTION,message);
+    }
+
+    public void videoView(Long subscriberId, Video video) {
+        VideoResponse videoResponse = VideoMapper.mapToVideoResponse(video);
+        Message<VideoResponse> message = MessageBuilder.withPayload(videoResponse)
+                .setHeader(KafkaHeaders.KEY, subscriberId)
+                .build();
+        streamBridge.send(VIDEOVIEW_FUNCTION,message);
     }
 }
