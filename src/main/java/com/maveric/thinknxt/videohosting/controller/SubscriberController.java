@@ -1,8 +1,8 @@
 package com.maveric.thinknxt.videohosting.controller;
 
 import com.maveric.thinknxt.videohosting.dto.SubscribeChannelRequest;
+import com.maveric.thinknxt.videohosting.dto.SubscriberInfo;
 import com.maveric.thinknxt.videohosting.dto.SubscriberRequest;
-import com.maveric.thinknxt.videohosting.dto.SubscriberResponse;
 import com.maveric.thinknxt.videohosting.service.SubscriberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class SubscriberController {
     private final SubscriberService subscriberService;
 
     @PostMapping("/register")
-    public ResponseEntity<SubscriberResponse> registerSubscriber(@RequestBody SubscriberRequest subscriberRequest) {
+    public ResponseEntity<SubscriberInfo> registerSubscriber(@RequestBody SubscriberRequest subscriberRequest) {
         return new ResponseEntity<>(subscriberService.registerSubscriber(subscriberRequest), HttpStatus.CREATED);
     }
 

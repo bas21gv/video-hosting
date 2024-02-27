@@ -12,8 +12,8 @@ public class SubscriberMapper {
                 .build();
     }
 
-    public static SubscriberResponse mapToSubscriberResponse(Subscriber subscriber) {
-        return SubscriberResponse.builder()
+    public static SubscriberInfo mapToSubscriberInfo(Subscriber subscriber) {
+        return SubscriberInfo.builder()
                 .id(subscriber.getId())
                 .firstName(subscriber.getFirstName())
                 .lastName(subscriber.getLastName())

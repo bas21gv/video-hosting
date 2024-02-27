@@ -10,6 +10,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewVideosNotification {
-    private SubscriberResponse subscriberInfo;
+    private SubscriberInfo subscriberInfo;
     private Set<VideoResponse> videoInfos;
 }

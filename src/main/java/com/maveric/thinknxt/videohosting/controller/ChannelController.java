@@ -2,7 +2,7 @@ package com.maveric.thinknxt.videohosting.controller;
 
 import com.maveric.thinknxt.videohosting.dto.MediaChannelRequest;
 import com.maveric.thinknxt.videohosting.dto.VideoRequest;
-import com.maveric.thinknxt.videohosting.dto.ViewCountRequest;
+import com.maveric.thinknxt.videohosting.dto.VideoViewRequest;
 import com.maveric.thinknxt.videohosting.entity.MediaChannel;
 import com.maveric.thinknxt.videohosting.service.ChannelService;
 import com.maveric.thinknxt.videohosting.service.VideoService;
@@ -34,9 +34,9 @@ public class ChannelController {
         return ResponseEntity.ok("Video added and message sent!");
     }
 
-    @PutMapping("/video/viewcount")
-    public ResponseEntity<String> updateViewCount(@RequestBody ViewCountRequest viewCountRequest) {
-        videoService.updateViewCount(viewCountRequest);
+    @PutMapping("/video/view")
+    public ResponseEntity<String> updateVideoView(@RequestBody VideoViewRequest videoViewRequest) {
+        videoService.updateVideoView(videoViewRequest);
         return ResponseEntity.ok("Video viewcount updated!!");
     }
 
